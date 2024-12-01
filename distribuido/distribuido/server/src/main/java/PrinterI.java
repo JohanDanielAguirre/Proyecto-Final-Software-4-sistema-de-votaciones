@@ -17,6 +17,7 @@ public class PrinterI implements Demo.Printer {
         allResults.clear();
         String id = String.valueOf(response);
         long startTime = System.currentTimeMillis();
+        System.out.println("Mensaje recibido: " + message);
         assignTasksToWorkers(message, __current);
 
         long endTime = System.currentTimeMillis();
@@ -52,7 +53,9 @@ public class PrinterI implements Demo.Printer {
 
     @Override
     public void assignTaskToWorker(String taskId, String taskData, Current current) {
+        System.out.println("llegamos hasta aqui");
         if (!workers.isEmpty()) {
+            System.out.println("Asignando tarea " + taskId + " a un worker...");
             WorkerPrx worker = workers.values().iterator().next();  // Seleccionamos un worker disponible
             worker.processTask(taskData);
         } else {
