@@ -1,5 +1,8 @@
 module Demo
 {
+    // Declaración adelantada de Observer
+    interface Observer;
+
     // Interfaz del Worker
     interface Worker
     {
@@ -22,4 +25,17 @@ module Demo
         void receivePartialResult(string taskId, string partialResult);
         void notifyTaskCompletion(string taskId);
     }
+
+    // Interfaz del Subject
+    interface Subject {
+        void suscribirse(Observer* observer); // Usa Observer después de declararlo
+        void desuscribirse(Observer* observer);
+        void notifyObservers(string message, string eventType);
+    }
+
+    // Interfaz del Observer
+    interface Observer {
+        void notify(string message, string eventType);
+    }
 }
+

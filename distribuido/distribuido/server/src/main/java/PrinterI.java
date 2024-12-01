@@ -1,5 +1,6 @@
 import Demo.Response;
 import Demo.WorkerPrx;
+import Demo.SubjectPrx;
 import com.zeroc.Ice.Current;
 import com.zeroc.Ice.Value;
 import java.io.FileWriter;
@@ -12,6 +13,9 @@ public class PrinterI implements Demo.Printer {
     private List<String> allResults = new ArrayList<>();
     private int response = 0;
 
+    // Agregar referencia al Subject
+    private SubjectPrx subject;
+	
     @Override
     public Response printString(String message, Current __current) {
         allResults.clear();
@@ -23,6 +27,11 @@ public class PrinterI implements Demo.Printer {
         long endTime = System.currentTimeMillis();
         response++;
         logToServerAuditFile(id, message, endTime - startTime);
+		// Notificar al Subject sobre la consulta exitosa
+        String eventMessage = "Consulta exitosa para: " + message;
+        String eventType = "Consulta Exitosa";
+        subject.notifyObservers(eventMessage, eventType);
+		
         return new Response(endTime - startTime, String.join("\n", allResults));
     }
 

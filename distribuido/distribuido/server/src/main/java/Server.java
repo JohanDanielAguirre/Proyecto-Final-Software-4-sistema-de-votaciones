@@ -1,7 +1,7 @@
 import com.zeroc.Ice.Communicator;
 import com.zeroc.Ice.ObjectAdapter;
 import com.zeroc.Ice.Util;
-
+import Demo.SubjectPrx;
 
 public class Server
 {
@@ -14,6 +14,9 @@ public class Server
             ObjectAdapter adapter = communicator.createObjectAdapterWithEndpoints("ServerAdapter", "default -p 9099");
             Object object = new PrinterI();
             adapter.add((com.zeroc.Ice.Object) object, Util.stringToIdentity("SimpleServer"));
+			SubjectPrx subject = SubjectPrx.checkedCast(
+            communicator.propertyToProxy("Subject.Proxy"));
+            adapter.add((com.zeroc.Ice.Object) subject, Util.stringToIdentity("subject"));
             adapter.activate();
             System.out.println("Server started...");
             communicator.waitForShutdown();
