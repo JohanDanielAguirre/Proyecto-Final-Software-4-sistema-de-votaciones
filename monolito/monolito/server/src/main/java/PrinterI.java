@@ -18,12 +18,14 @@ public class PrinterI implements Demo.Printer {
 
     private String executeQuery(String documento) {
         String query = """
-                SELECT ciudadano_nombre, ciudadano_apellido, ciudadano_documento, departamento, municipio, puesto_direccion, mesa
-                FROM ciudadano
-                JOIN votacion ON ciudadano.ciudadano_id = votacion.ciudadano_id
-                JOIN puesto ON votacion.puesto_id = puesto.puesto_id
-                JOIN mesa ON votacion.mesa_id = mesa.mesa_id
-                WHERE ciudadano_documento = ?
+                SELECT c.nombre AS ciudadano_nombre,c.apellido AS ciudadano_apellido, c.documento AS ciudadano_documento,d.nombre AS departamento,
+               m.nombre AS municipio,pv.direccion AS puesto_direccion, mv.id AS mesa
+               FROM ciudadano c
+               JOIN mesa_votacion mv ON c.mesa_id = mv.id
+                JOIN puesto_votacion pv ON mv.puesto_id = pv.id
+                JOIN municipio m ON pv.municipio_id = m.id
+                JOIN departamento d ON m.departamento_id = d.id
+                WHERE c.documento = ?
         """;
 
         StringBuilder result = new StringBuilder();

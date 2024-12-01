@@ -26,7 +26,6 @@ public class Client
                 Scanner scanner = new Scanner(System.in);
                 System.out.println("Ingresa la ruta del archivo con las cédulas:");
                 String filePath = scanner.nextLine(); // Obtener la ruta del archivo desde el usuario
-
                 try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
                     String cedula;
                     while ((cedula = reader.readLine()) != null) {

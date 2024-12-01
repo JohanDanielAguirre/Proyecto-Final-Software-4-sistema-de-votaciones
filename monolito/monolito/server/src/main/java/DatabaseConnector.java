@@ -16,12 +16,10 @@ public class DatabaseConnector {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            //System.out.println("Conexión exitosa.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
