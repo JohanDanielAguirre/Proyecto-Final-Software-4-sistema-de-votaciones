@@ -6,11 +6,9 @@ import com.zeroc.Ice.Util;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Client
 {
@@ -48,6 +46,14 @@ public class Client
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void logToClientAuditFile(String cedula, String mesa, boolean isPrime, long responseTime) {
+        try (FileWriter writer = new FileWriter("client_audit_log.csv", true)) {
+            writer.write(cedula + "," + mesa + "," + (isPrime ? 1 : 0) + "," + responseTime + "\n");
+        } catch (IOException e) {
+            System.out.println("Error escribiendo en el archivo de auditoría del cliente: " + e.getMessage());
         }
     }
 }

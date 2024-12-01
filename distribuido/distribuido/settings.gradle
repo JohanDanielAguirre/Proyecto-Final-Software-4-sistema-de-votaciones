@@ -10,3 +10,5 @@
 rootProject.name = 'distribuido'
 include 'client'
 include 'server'
+include 'worker'
+
