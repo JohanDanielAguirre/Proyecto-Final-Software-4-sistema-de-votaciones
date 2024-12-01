@@ -1,5 +1,3 @@
-package org.example;
-
 import Demo.PrinterPrx;
 
 import java.sql.Connection;

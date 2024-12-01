@@ -45,10 +45,7 @@ public class PrinterI implements Demo.Printer {
     }
 
     @Override
-    public void registerWorker(String workerId, WorkerPrx workerProxy, Current current) {
-        System.out.println("Worker registrado: " + workerId);
-        System.out.println("Worker registrado: " + workerProxy.toString());
-        workers.put(workerId, workerProxy);}
+    public void registerWorker(String workerId, WorkerPrx workerProxy, Current current) {workers.put(workerId, (WorkerPrx) workerProxy);}
 
     @Override
     public void assignTaskToWorker(String taskId, String taskData, Current current) {

@@ -17,7 +17,7 @@ module Demo
     interface Printer
     {
         Response printString(string s);
-        void registerWorker(string workerId, Worker workerProxy);  // Se cambió WorkerPrx a Worker
+        void registerWorker(string workerId, Worker* workerProxy);
         void assignTaskToWorker(string taskId, string taskData);
         void receivePartialResult(string taskId, string partialResult);
         void notifyTaskCompletion(string taskId);
