@@ -1,11 +1,15 @@
 #
-# The server creates one single object adapter with the name
-# "Hello". The following line sets the endpoints for this
-# adapter.
+# Configuración del adaptador del servidor
 #
-Printer.Endpoints=tcp -p 9099
+Printer.Endpoints=tcp -h localhost -p 9099
+
 #
-# Only listen on the ZeroTier's LIASOn1 interface by default.
+# Configuración del localizador de IceGrid
 #
+Ice.Default.Locator=DemoIceGrid/Locator:default -h localhost -p 4061
+
+#
+# Configuración adicional
+#
+Ice.Default.Host=localhost
 size=1000000000
-Ice.Default.Host=xhgrid2

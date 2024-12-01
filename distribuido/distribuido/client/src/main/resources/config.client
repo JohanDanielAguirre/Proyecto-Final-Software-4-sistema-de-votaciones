@@ -1,17 +1,15 @@
 #
-# The client reads this property to create the reference to the
-# "hello" object in the server.
+# Configuration for the server proxy
 #
-Printer.Proxy=SimplePrinter:tcp -p 9099
+Printer.Proxy=SimplePrinter:tcp -h localhost -p 9099
 
 #
-# Uncomment to use the WebSocket transports instead.
+# Configuration for the IceGrid locator
 #
-#Hello.Proxy=hello:ws -p 10002:udp -p 10000:wss -p 10003
+Ice.Default.Locator=DemoIceGrid/Locator:default -h localhost -p 4061
 
-
-# Only listen on the ZeroTier's LIASOn1 interface by default.
 #
-
+# Additional configuration
+#
+Ice.Default.Host=localhost
 size=1000000000
-Ice.Default.Host=xhgrid2

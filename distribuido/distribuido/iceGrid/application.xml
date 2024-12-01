@@ -1,0 +1,13 @@
+<icegrid>
+    <application name="distribuido">
+        <node name="node1">
+            <server name="server1" exe="java" activation="on-demand">
+               <option>-jar</option>
+                <option>../server/build/libs/server.jar</option>
+                <adapter name="Hello" endpoints="tcp -h localhost">
+                    <object indentity="hello" type="::Demo::Hello" property="Identity"/>
+                </adapter>
+            </server>
+        </node>
+    </application>
+</icegrid>
