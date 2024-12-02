@@ -1,15 +1,11 @@
-import Demo.Response;
-import com.zeroc.Ice.Current;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class PrinterI implements Demo.Printer {
+class PrinterI {
 
-    @Override
-    public Response printString(String message, Current __current) {
+    public Response printString(String message) {
         long startTime = System.currentTimeMillis();
         String response = executeQuery(message);
         long endTime = System.currentTimeMillis();
@@ -22,19 +18,17 @@ public class PrinterI implements Demo.Printer {
                m.nombre AS municipio,pv.direccion AS puesto_direccion, mv.id AS mesa
                FROM ciudadano c
                JOIN mesa_votacion mv ON c.mesa_id = mv.id
-                JOIN puesto_votacion pv ON mv.puesto_id = pv.id
-                JOIN municipio m ON pv.municipio_id = m.id
-                JOIN departamento d ON m.departamento_id = d.id
-                WHERE c.documento = ?
+               JOIN puesto_votacion pv ON mv.puesto_id = pv.id
+               JOIN municipio m ON pv.municipio_id = m.id
+               JOIN departamento d ON m.departamento_id = d.id
+               WHERE c.documento = ?
         """;
 
         StringBuilder result = new StringBuilder();
         try (Connection connection = new DatabaseConnector().connect();
              PreparedStatement stmt = connection.prepareStatement(query)) {
-            //System.out.println("Entra a formar la query");
             stmt.setString(1, documento);
             try (ResultSet rs = stmt.executeQuery()) {
-                //System.out.println("Entra a uniendo la query");
                 if (rs.next()) {
                     result.append("El ciudadano ")
                             .append(rs.getString("ciudadano_nombre")).append(" ")
@@ -55,8 +49,6 @@ public class PrinterI implements Demo.Printer {
         } catch (SQLException e) {
             result.append("Error ejecutando consulta: ").append(e.getMessage());
         }
-        System.out.println("query result: " + result.toString());
         return result.toString();
     }
-
 }

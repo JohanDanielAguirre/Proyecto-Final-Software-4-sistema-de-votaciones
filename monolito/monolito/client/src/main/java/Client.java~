@@ -17,7 +17,6 @@ public class Client
             if (filePath.equalsIgnoreCase("exit")) {
                 break;
             }
-            long startTimegen = System.currentTimeMillis();
 
             try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
                 String cedula;
@@ -27,8 +26,6 @@ public class Client
                     System.out.println("Respuesta: " + response.value);
                     System.out.println("Tiempo de respuesta: " + response.responseTime + "ms");
                 }
-                long endTimegen = System.currentTimeMillis();
-                System.out.println("Tiempo total de ejecución: " + (endTimegen - startTimegen) + "ms");
             } catch (IOException e) {
                 System.out.println("Error al leer el archivo: " + e.getMessage());
             }
