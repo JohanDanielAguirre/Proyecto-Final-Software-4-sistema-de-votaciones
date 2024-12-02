@@ -13,11 +13,14 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-public class Client
-{
+public class Client {
     public static void main(String[] args) {
         Communicator communicator = null;
+		ExecutorService threadPool = Executors.newFixedThreadPool(5); // Crear un pool de consultas fijo ej: tamaño 5
         try {
             communicator = Util.initialize(args, "config.client");
 			
@@ -55,31 +58,45 @@ public class Client
                 Scanner scanner = new Scanner(System.in);
                 System.out.println("Ingresa la ruta del archivo con las cédulas:");
                 String filePath = scanner.nextLine(); // Obtener la ruta del archivo desde el usuario
+                if (filePath.equals("exit")) {
+                    break;
+                }
+                
                 try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
                     String cedula;
                     while ((cedula = reader.readLine()) != null) {
                         // Enviar cada cédula al servidor
-                        System.out.println("Consultando cédula: " + cedula);
-                        Response response = server.printString(cedula);
-                        System.out.println("Respuesta del servidor: " + response.value);
-                        System.out.println("Tiempo de espera: " + response.responseTime + "ms");
+                        String finalCedula = cedula;
+                        threadPool.submit(() -> {
+                            try {
+                                System.out.println("Consultando cédula: " + finalCedula);
+                                Response response = server.printString(finalCedula);
+                                System.out.println("Respuesta del servidor: " + response.value);
+                                System.out.println("Tiempo de espera: " + response.responseTime + "ms");
+                            } catch (Exception e) {
+                                System.out.println("Error al consultar cédula: " + finalCedula + " - " + e.getMessage());
+                            }
+                        });
                     }
                 } catch (IOException e) {
                     System.out.println("Error al leer el archivo: " + e.getMessage());
                 }
-                if (filePath.equals("exit")) {
-                    break;
-                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error de conexión o ejecución: " + e.getMessage());
+        } finally {
+            // cerrar la conexión y los hilos
+            try {
+                threadPool.shutdown();
+                threadPool.awaitTermination(1, TimeUnit.MINUTES); // esperar hasta que terminen todas las tareas
+            } catch (InterruptedException e) {
+                System.out.println("Error cerrando el thread pool: " + e.getMessage());
             }
             if (communicator != null) {
                 communicator.destroy();
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
-
     private void logToClientAuditFile(String cedula, String mesa, boolean isPrime, long responseTime) {
         try (FileWriter writer = new FileWriter("client_audit_log.csv", true)) {
             writer.write(cedula + "," + mesa + "," + (isPrime ? 1 : 0) + "," + responseTime + "\n");
