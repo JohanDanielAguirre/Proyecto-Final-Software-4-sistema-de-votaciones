@@ -70,6 +70,7 @@ public class Client implements Demo.Notification {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             List<String> cedulasBatch = new ArrayList<>();
             String cedula;
+			
             while ((cedula = reader.readLine()) != null) {
                 cedulasBatch.add(cedula);
 
@@ -103,11 +104,16 @@ public class Client implements Demo.Notification {
 
     private void sendBatchToExecutor(List<String> cedulasBatch) {
         // Enviar un batch de cédulas al ThreadPool para que las procese en paralelo
-        executorService.submit(() -> {
-            for (String cedula : cedulasBatch) {
-                processCedula(cedula);
-            }
-        });
+		executorService.submit(() -> {
+			try {
+				System.out.println("enviando batch de cédulas al servidor: " + cedulasBatch.size());
+				String batchData = String.join(",", cedulasBatch);
+				server.printString(batchData);
+				System.out.println("batch procesado correctamente.");
+			} catch (Exception e) {
+				System.out.println("Error: no se pudo procesar el batch: " + e.getMessage());
+			}
+		});
     }
 
     private void processCedula(String cedula) {
