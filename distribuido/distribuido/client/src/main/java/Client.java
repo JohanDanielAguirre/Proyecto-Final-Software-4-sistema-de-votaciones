@@ -2,11 +2,10 @@ import Demo.PrinterPrx;
 import Demo.Response;
 import Demo.ObserverPrx;
 import Demo.SubjectPrx;
-import com.zeroc.Ice.Current;
 import com.zeroc.Ice.Communicator;
+import com.zeroc.Ice.ObjectAdapter;
 import com.zeroc.Ice.ObjectPrx;
 import com.zeroc.Ice.Util;
-import com.zeroc.Ice.ObjectAdapter;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -20,40 +19,41 @@ import java.util.concurrent.TimeUnit;
 public class Client {
     public static void main(String[] args) {
         Communicator communicator = null;
-		ExecutorService threadPool = Executors.newFixedThreadPool(5); // Crear un pool de consultas fijo ej: tamaño 5
+        ExecutorService threadPool = Executors.newFixedThreadPool(5); // Crear un pool de consultas fijo ej: tamaño 5
         try {
             communicator = Util.initialize(args, "config.client");
-			
+
             ObjectPrx base = communicator.stringToProxy("SimpleServer:default -p 9099");
-			
             PrinterPrx server = PrinterPrx.checkedCast(base);
-			//obtener el proxy del sujeto publisher
             if (server == null) throw new Error("Invalid proxy");
+
+            // Obtener el proxy del sujeto publisher
             SubjectPrx subject = SubjectPrx.checkedCast(
                     communicator.propertyToProxy("Subject.Proxy"));
 
             if (subject == null) {
                 throw new Error("ERROR: No se pudo conectar al publicador requerido");
             }
-			//crear el adaptador para la comunicacion con el observer del cliente
-            ObjectAdapter adapter = communicator.createObjectAdapter("");
+
+            // Crear el adaptador para la comunicación con el observer del cliente
+            ObjectAdapter adapter = communicator.createObjectAdapter("ClientAdapter");
             ObserverPrx observer = ObserverPrx.uncheckedCast(
                     adapter.addWithUUID(new ObserverI())
             );
-			
-			adapter.activate();
-			//registrar al cliente con el observador
-			subject.suscribirse(observer);
-			
+
+            adapter.activate();
+            // Registrar al cliente con el observador
+            subject.suscribirse(observer);
+
             System.out.println("El cliente fue suscrito como observador de forma exitosa");
-            
-			PrinterPrx service = PrinterPrx.checkedCast(
+
+            PrinterPrx service = PrinterPrx.checkedCast(
                     communicator.propertyToProxy("Printer.Proxy"));
 
             if (service == null) {
                 throw new Error("Error: Proxy invalido");
             }
-			
+
             while (true) {
                 Scanner scanner = new Scanner(System.in);
                 System.out.println("Ingresa la ruta del archivo con las cédulas:");
@@ -61,7 +61,7 @@ public class Client {
                 if (filePath.equals("exit")) {
                     break;
                 }
-                
+
                 try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
                     String cedula;
                     while ((cedula = reader.readLine()) != null) {
@@ -83,12 +83,12 @@ public class Client {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error de conexión o ejecución: " + e.getMessage());
+            e.printStackTrace();
         } finally {
-            // cerrar la conexión y los hilos
+            // Cerrar la conexión y los hilos
             try {
                 threadPool.shutdown();
-                threadPool.awaitTermination(1, TimeUnit.MINUTES); // esperar hasta que terminen todas las tareas
+                threadPool.awaitTermination(1, TimeUnit.MINUTES); // Esperar hasta que terminen todas las tareas
             } catch (InterruptedException e) {
                 System.out.println("Error cerrando el thread pool: " + e.getMessage());
             }
@@ -97,6 +97,7 @@ public class Client {
             }
         }
     }
+
     private void logToClientAuditFile(String cedula, String mesa, boolean isPrime, long responseTime) {
         try (FileWriter writer = new FileWriter("client_audit_log.csv", true)) {
             writer.write(cedula + "," + mesa + "," + (isPrime ? 1 : 0) + "," + responseTime + "\n");

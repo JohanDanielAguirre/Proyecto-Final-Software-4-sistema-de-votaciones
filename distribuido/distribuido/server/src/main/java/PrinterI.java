@@ -15,6 +15,10 @@ public class PrinterI implements Demo.Printer {
 
     // Agregar referencia al Subject
     private SubjectPrx subject;
+
+    public PrinterI(SubjectPrx subject) {
+        this.subject = subject;
+    }
 	
     @Override
     public Response printString(String message, Current __current) {

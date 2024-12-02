@@ -9,10 +9,9 @@ Printer.Proxy=SimplePrinter:tcp -p 9100
 #
 #Hello.Proxy=hello:ws -p 10002:udp -p 10000:wss -p 10003
 
-# Configuration for Subject proxy
-Subject.Proxy=Demo/Subject:tcp -h xhgrid2 -p 9099
 
 # Only listen on the ZeroTier's LIASOn1 interface by default.
 #
+
 size=1000000000
 Ice.Default.Host=xhgrid2

@@ -9,3 +9,6 @@ Printer.Endpoints=tcp -p 9099
 #
 size=1000000000
 Ice.Default.Host=xhgrid2
+
+# Configuration for Subject proxy
+Subject.Proxy=Demo/Subject:default -p 9099
