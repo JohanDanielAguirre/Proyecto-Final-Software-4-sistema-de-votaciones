@@ -34,7 +34,8 @@ public class Client implements Demo.Notification {
             String hostname = InetAddress.getLocalHost().getHostName();
             String clientEndpoints = "tcp -h " + hostname + " -p 9099";
             ObjectAdapter adapter = communicator.createObjectAdapterWithEndpoints("ClientAdapter", clientEndpoints);
-            adapter.add(this, Util.stringToIdentity("client10"));
+            Client client = new Client();
+            adapter.add(client, Util.stringToIdentity("client10"));
             adapter.activate();
             NotificationPrx clientProxy = NotificationPrx.uncheckedCast(adapter.createProxy(Util.stringToIdentity("client10")));
             server.registerObserver("client1", clientProxy);

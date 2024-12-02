@@ -9,8 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static java.net.InetAddress.getLocalHost;
-
 public class Worker implements Demo.Worker {
 
     private String workerId;
@@ -27,7 +25,6 @@ public class Worker implements Demo.Worker {
         if (server == null) throw new Error("Invalid proxy");
         String hostname = InetAddress.getLocalHost().getHostName();
         String clientEndpoints = "tcp -h " + hostname + " -p 9099";
-        // Create and activate the object adapter for Worker
         ObjectAdapter adapter = communicator.createObjectAdapterWithEndpoints("WorkerAdapter", clientEndpoints);
         Worker worker = new Worker("worker1");
         adapter.add(worker, Util.stringToIdentity("worker1"));

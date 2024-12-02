@@ -20,7 +20,15 @@ public class PrinterI implements Demo.Printer {
         observers.put(observerId, observerProxy);
         System.out.println("Cliente registrado como observador: " + observerId);
         System.out.println(observers.values());
-        observerProxy.notifyLoadFile("archivo.txt");
+        Thread thread = new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+                notifyClients("archivo.txt");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        thread.start();
     }
 
     public void notifyClients(String filePath) {

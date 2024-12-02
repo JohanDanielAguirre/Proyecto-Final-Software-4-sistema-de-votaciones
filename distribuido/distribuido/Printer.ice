@@ -7,6 +7,10 @@ module Demo
         void shutdown();
     }
 
+    interface Notification {
+            void notifyLoadFile(string filePath);
+        }
+
     // Clase de Respuesta
     class Response {
         long responseTime;
@@ -21,5 +25,6 @@ module Demo
         void assignTaskToWorker(string taskId, string taskData);
         void receivePartialResult(string taskId, string partialResult);
         void notifyTaskCompletion(string taskId);
+        void registerObserver(string observerId, Notification* observerProxy);
     }
 }
